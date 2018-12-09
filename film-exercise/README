@@ -1,0 +1,97 @@
+### README
+
+How it is specified in the problem, the solution pretends to be focused in the implementation of the functional
+requirements inside an interval of time of 4 hours (more or less).  To  implement this solution, I spend an afternoon
+checking the technology (Spring Boot) and developing the REST service. Personally, I think I can be possible to add
+more things (add REST operations, validators for input parameters, include a Relational database and some prebuild
+image with docker), but how it is specified, part the problem is to be focused in the design and API specification.
+
+The software is designed to decouple the problem as a Model-View-Controller pattern and define the domain
+problem (not depended of any technology). Furthermore, this decoupled design permit to apply some SOLID principles
+(one responsability or inverse dependency via beans)  with improve the design and the test code coverage.
+
+
+To test code, it is necessary add some films and customer to check API rest. For this, uncomment AppInitializer.commandLineRunner
+function and if you want, add more films and customers.
+
+### Design
+Related to the design, we define three main entities:
+- Film  -> Represents a film from our inventory. For a simple design, it is added one variable to represent the stock. It
+is possible that for more "mature" solution it can be better move this stock to another table.
+- Customer -> It represents a customer. It is necessary because you needs to link a rent process to someone
+- Rent -> It is added a rent history and control. It represents a rent process and for our case it is useful to check
+the bonus points.
+
+To define different use cases, it is created one class for each. It permits to decoupled any case and create the necessary tests.
+- CalculateBonusPoints -> Give us the bonus points from a customer
+- CalculateRenting -> Calculate price from renting a film (but it doesn't rent)
+- ListInventory - List all films
+- RentFilms - Implements the rent process.
+
+The implementation tries to use inmmutable objects which provides a secure manipulation of class instances.
+
+### dataproviders
+
+In our case, it is added a h2 database (in memory). It useful for testing but not for a product. It doesn't added  any
+specific database because it was not the objective the problem. Personally, I would add a relational database (mysql or postgres)
+because the problem doesn't have any special requirements and a mysql provides the ACID features.
+
+Spring provides an easy way to create repository patterns and with JPA is possible to reuse same classes for different
+type of databases. This type of ORM mapping is useful for this small exercise but it could be necessary to refactor to use
+technologies to permit optimized queries.
+
+To work, it is used an incremental IDS. For simple cases is useful, but to expose to the REST service can be better
+the utilization of autogenerate UUIDs. It gives us security when we expose our IDs because it will not be able to deduce
+it.
+
+
+### entrypoint rest
+
+I added only necessary REST operations to implement functional requirements. But it is clear that it will be necessary
+add the POST, PUT, GET, DELETE operations to work with customers and Films (as an extra, it could add HEAD and OPTIONS).
+For our case to be focused in the  problem I added:
+
+ - films/ -> get -> It permits to list inventory with pages
+ - films/x/checkrent -> put -> It permits to check price for a film
+ - customers/x/rent ->put -> It permits to a customer to rent a film
+ - customers/x/points -> get -> Get points from a customer
+
+The identified resources in these cases are films and customers. It is not possible rent films if you are not a customer.
+For this case it is designed in this way.
+
+It is added versioning (v1.0) to keep the possibility to extend to another updated version.
+
+It is exposed as json messages and it is created DTO (Data transfer objects) to represent the information to show. We found
+a technology limitation in the  get operation with /films where we are exposing information from the domain. In this case,
+it is not a problem, the DTO and domain information is the same, but I doesn't necessary for other cases.
+
+It is returned 40x bad request message for not correct query as the standard defines.
+
+#### extra details
+
+- The bean creation it is added in the AppInitializer class, for complex problems it will be moved to other classes to organize
+the different bean creation.
+
+- It is only added test for the basic cases. It is necessary add unit tests and integration tests for possible error cases in
+order to follow the triangle test principle
+
+- The implementation try to be decoupled from technologies, split responsabities and use immutable objects, but Spring
+provides us constraints in this area...
+
+- It is possible add validators to check input parameters which I would added in the entrypoint classes (responsible to verify
+input parameters)
+
+- It would be useful to dockerize the project and improve to permit modify the container  java server
+    https://spring.io/guides/gs/spring-boot-docker/
+
+- For next version, it is necessary add TLS support
+
+- It is necessary to refactor tests and add more unit and integration tests. Also, I would be useful to improve integration test to keep clean test among each test.
+
+
+to execute:
+
+```
+mvn clean install
+mvn spring-boot:run
+```

@@ -1,0 +1,18 @@
+Auth:
+	register
+	login
+	logout
+Messages:
+	publish
+	getMessages
+Groups:
+	getGroups
+	
+Link:
+	publish link
+	get links
+
+	
+Recomendation:
+	get recommendation for user
+	
