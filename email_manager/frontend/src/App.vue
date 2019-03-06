@@ -1,21 +1,10 @@
 <template>
   <div id="app">
-	<div class="container">
-		<div>
-			<div class="row">
-				<div class="col-sm">
-			<button class="btn btn-secondary" type="button">Send message</button>
-				</div>
-			</div>
-		</div>
-	</div>
-<!--
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
     </div>
     <router-view/>
-   -->
   </div>
 </template>
 
